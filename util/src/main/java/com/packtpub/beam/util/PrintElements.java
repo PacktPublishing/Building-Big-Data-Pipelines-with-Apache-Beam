@@ -22,10 +22,10 @@ import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PDone;
 
 /** Print contents of {@link PCollection} to {@link System.err} */
-public class LogResults<T> extends PTransform<PCollection<T>, PDone> {
+public class PrintElements<T> extends PTransform<PCollection<T>, PDone> {
 
-  public static <T> LogResults<T> of() {
-    return new LogResults<>();
+  public static <T> PrintElements<T> of() {
+    return new PrintElements<>();
   }
 
   @Override

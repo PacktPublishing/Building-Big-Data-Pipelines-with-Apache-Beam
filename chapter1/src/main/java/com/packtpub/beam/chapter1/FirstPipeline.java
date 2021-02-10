@@ -15,10 +15,9 @@
  */
 package com.packtpub.beam.chapter1;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-import com.packtpub.beam.util.LogResults;
+import com.packtpub.beam.util.PrintElements;
 import com.packtpub.beam.util.Tokenize;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,26 +27,34 @@ import org.apache.beam.sdk.transforms.Count;
 import org.apache.beam.sdk.transforms.Create;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
-import org.junit.jupiter.api.Test;
 
-public class BeamDemoTest {
+public class FirstPipeline {
 
-  List<String> lines;
+  public static void main(String[] args) throws IOException {
 
-  public BeamDemoTest() throws Exception {
-    lines =
-        Files.readAllLines(
-            Paths.get(ClassLoader.getSystemClassLoader().getResource("shakespeare.txt").getFile()),
-            StandardCharsets.UTF_8);
-  }
+    // read some input from text file
+    ClassLoader loader = Chapter1Demo.class.getClassLoader();
+    String file = loader.getResource("lorem.txt").getFile();
+    List<String> lines = Files.readAllLines(Paths.get(file), StandardCharsets.UTF_8);
 
-  @Test
-  public void testFirstPipeline() {
+    // create empty Pipeline
+    // A Pipeline is a container for both data (PCollection)
+    // and operations (PTransforms)
     Pipeline pipeline = Pipeline.create();
+
+    // transform 'lines' into PCollection
     PCollection<String> input = pipeline.apply(Create.of(lines));
+
+    // tokenize the input into words
     PCollection<String> words = input.apply(Tokenize.of());
+
+    // count each occurrence of a word
     PCollection<KV<String, Long>> result = words.apply(Count.perElement());
-    result.apply(LogResults.of());
-    assertNotNull(pipeline.run());
+
+    // print the contents of PCollection 'result' to standard out
+    result.apply(PrintElements.of());
+
+    // run the Pipeline
+    pipeline.run().waitUntilFinish();
   }
 }

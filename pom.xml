@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
 
-  <name>beam-parent</name>
+  <name>Apache Beam Practical Guide</name>
 
   <properties>
     <apache.beam.version>2.27.0</apache.beam.version>
@@ -113,12 +113,12 @@
         <scope>test</scope>
       </dependency>
 
-      <!--dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${jupiter.version}</version>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>1.7.30</version>
         <scope>test</scope>
-      </dependency-->
+      </dependency>
 
     </dependencies>
   </dependencyManagement>
