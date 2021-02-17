@@ -84,7 +84,6 @@ public class Chapter1DemoTest {
         .forEach(streamBuilder::addElements);
     PCollection<String> input = pipeline.apply(streamBuilder.advanceWatermarkToInfinity());
     PCollection<String> words = input.apply(Tokenize.of());
-    words.apply(Count.perElement());
     assertThrows(IllegalStateException.class, () -> words.apply(Count.perElement()));
   }
 
