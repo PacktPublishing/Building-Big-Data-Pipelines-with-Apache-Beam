@@ -15,6 +15,7 @@
  */
 package com.packtpub.beam.chapter1;
 
+import com.packtpub.beam.util.PrintElements;
 import com.packtpub.beam.util.Tokenize;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -27,12 +28,14 @@ import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.StringUtf8Coder;
 import org.apache.beam.sdk.testing.TestStream;
 import org.apache.beam.sdk.transforms.Count;
+import org.apache.beam.sdk.transforms.windowing.AfterWatermark;
+import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
+import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.TimestampedValue;
 import org.joda.time.Instant;
 
-public class MissingWindowPipeline {
-
+public class FirstStreamingPipeline {
   public static void main(String[] args) throws IOException {
 
     ClassLoader loader = Chapter1Demo.class.getClassLoader();
@@ -63,6 +66,14 @@ public class MissingWindowPipeline {
     PCollection<String> input = pipeline.apply(streamBuilder.advanceWatermarkToInfinity());
 
     PCollection<String> words = input.apply(Tokenize.of());
-    words.apply(Count.perElement());
+    PCollection<String> windowed =
+        words.apply(
+            Window.<String>into(new GlobalWindows())
+                .discardingFiredPanes()
+                .triggering(AfterWatermark.pastEndOfWindow()));
+
+    windowed.apply(Count.perElement()).apply(PrintElements.of());
+
+    pipeline.run().waitUntilFinish();
   }
 }
