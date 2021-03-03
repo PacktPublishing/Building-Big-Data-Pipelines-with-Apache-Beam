@@ -1,0 +1,12 @@
+FROM openjdk:11
+
+ADD . /usr/src/beam-packt/
+
+RUN cd /usr/src/beam-packt/ \
+  && ./mvnw clean package -Pdocker
+
+RUN cd /usr/src/beam-packt/ \
+  && ./copy-jars.sh \
+  && cp bin/*.sh /usr/local/bin/
+
+ENTRYPOINT '/usr/local/bin/sleep-forever.sh'

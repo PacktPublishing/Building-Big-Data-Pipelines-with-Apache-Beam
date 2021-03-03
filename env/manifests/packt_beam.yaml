@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: packt-beam
+  name: packt-beam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: packt-beam
+  template:
+    metadata:
+      labels:
+        app: packt-beam
+    spec:
+      containers:
+      - image: packt-beam
+        imagePullPolicy: Never
+        name: packt-beam
