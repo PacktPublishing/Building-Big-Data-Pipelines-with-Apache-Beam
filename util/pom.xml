@@ -20,6 +20,11 @@
       <artifactId>beam-sdks-java-core</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

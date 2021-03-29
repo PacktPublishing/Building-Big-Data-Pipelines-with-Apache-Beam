@@ -13,32 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.packtpub.beam.util;
+package com.packtpub.beam.chapter2.utils;
 
-import com.google.common.base.Strings;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import org.apache.beam.sdk.transforms.FlatMapElements;
+import org.apache.beam.sdk.io.kafka.KafkaRecord;
+import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.PTransform;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.TypeDescriptors;
 
-public class Tokenize extends PTransform<PCollection<String>, PCollection<String>> {
+public class MapToLines<K, T>
+    extends PTransform<PCollection<KafkaRecord<K, T>>, PCollection<String>> {
 
-  public static Tokenize of() {
-    return new Tokenize();
+  public static <K, V> MapToLines<K, V> of() {
+    return new MapToLines<>();
   }
 
   @Override
-  public PCollection<String> expand(PCollection<String> input) {
-    return input.apply(FlatMapElements.into(TypeDescriptors.strings()).via(Tokenize::toWords));
+  public PCollection<String> expand(PCollection<KafkaRecord<K, T>> input) {
+    return input.apply(
+        MapElements.into(TypeDescriptors.strings())
+            .via(r -> ifNotNull(r.getKV().getKey()) + " " + ifNotNull(r.getKV().getValue())));
   }
 
-  private static List<String> toWords(String input) {
-    return Arrays.stream(input.split("\\W+"))
-        .filter(((Predicate<String>) Strings::isNullOrEmpty).negate())
-        .collect(Collectors.toList());
+  private static <T> String ifNotNull(T value) {
+    return value != null ? value.toString() : "";
   }
 }
