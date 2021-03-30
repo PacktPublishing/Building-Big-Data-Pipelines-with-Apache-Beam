@@ -85,7 +85,7 @@ public class TopKWords {
   static Params parseArgs(String[] args) {
     if (args.length < 5) {
       throw new IllegalArgumentException(
-          "Expected at least 5 arguments: <windowLength> <bootstrapServer> <inputTopic> <outputTopic> <n>");
+          "Expected at least 5 arguments: <windowLength> <bootstrapServer> <inputTopic> <outputTopic> <k>");
     }
     return new Params(
         Duration.standardSeconds(Integer.parseInt(args[0])),

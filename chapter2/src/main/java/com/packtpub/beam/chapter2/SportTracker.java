@@ -38,11 +38,9 @@ import org.apache.beam.sdk.io.kafka.CustomTimestampPolicyWithLimitedDelay;
 import org.apache.beam.sdk.io.kafka.KafkaIO;
 import org.apache.beam.sdk.io.kafka.TimestampPolicyFactory;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.transforms.Combine;
 import org.apache.beam.sdk.transforms.FlatMapElements;
 import org.apache.beam.sdk.transforms.GroupByKey;
 import org.apache.beam.sdk.transforms.MapElements;
-import org.apache.beam.sdk.transforms.Partition;
 import org.apache.beam.sdk.transforms.windowing.AfterProcessingTime;
 import org.apache.beam.sdk.transforms.windowing.BoundedWindow;
 import org.apache.beam.sdk.transforms.windowing.GlobalWindows;
@@ -52,7 +50,6 @@ import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.util.VarInt;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.values.PCollectionList;
 import org.apache.beam.sdk.values.TypeDescriptor;
 import org.apache.beam.sdk.values.TypeDescriptors;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -109,9 +106,11 @@ public class SportTracker {
                                 + "\t"
                                 + kv.getValue().getLength()
                                 + "\t"
-                                + kv.getValue().getTime()
-                                    * 1000
-                                    / (60.0 * kv.getValue().getLength()))))
+                                + (kv.getValue().getTime() > 0
+                                    ? (kv.getValue().getTime()
+                                        * 1000
+                                        / (60.0 * kv.getValue().getLength()))
+                                    : 0))))
         .apply(
             KafkaIO.<String, String>write()
                 .withBootstrapServers(params.getBootstrapServer())
@@ -124,8 +123,7 @@ public class SportTracker {
   @VisibleForTesting
   static PCollection<KV<String, Metric>> computeTrackerMetrics(
       PCollection<KV<String, Position>> records) {
-    PCollectionList<KV<String, Position>> list = records.apply(
-        Partition.of(5, (element, numPartitions) -> element.hashCode() & Integer.MAX_VALUE % numPartitions));
+
     return records
         .apply(
             "globalWindow",
