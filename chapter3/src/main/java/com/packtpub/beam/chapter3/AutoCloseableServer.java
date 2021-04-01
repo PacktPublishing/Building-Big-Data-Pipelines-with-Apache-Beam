@@ -13,21 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.packtpub.beam.util;
+package com.packtpub.beam.chapter3;
 
-import org.apache.beam.sdk.transforms.FlatMapElements;
-import org.apache.beam.sdk.transforms.PTransform;
-import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.values.TypeDescriptors;
+import com.google.common.annotations.VisibleForTesting;
+import io.grpc.Server;
+import lombok.Value;
 
-public class Tokenize extends PTransform<PCollection<String>, PCollection<String>> {
-
-  public static Tokenize of() {
-    return new Tokenize();
+@VisibleForTesting
+@Value
+class AutoCloseableServer implements AutoCloseable {
+  static AutoCloseableServer of(Server server) {
+    return new AutoCloseableServer(server);
   }
 
+  Server server;
+
   @Override
-  public PCollection<String> expand(PCollection<String> input) {
-    return input.apply(FlatMapElements.into(TypeDescriptors.strings()).via(Utils::toWords));
+  public void close() {
+    server.shutdownNow();
   }
 }

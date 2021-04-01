@@ -15,7 +15,7 @@
  */
 package com.packtpub.beam.chapter2;
 
-import com.packtpub.beam.chapter2.utils.MapToLines;
+import com.packtpub.beam.util.MapToLines;
 import com.packtpub.beam.util.Tokenize;
 import java.util.Arrays;
 import lombok.Value;

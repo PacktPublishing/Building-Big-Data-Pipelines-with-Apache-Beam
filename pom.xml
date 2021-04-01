@@ -8,7 +8,7 @@
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
 
-  <name>Apache Beam Practical Guide</name>
+  <name>Building Big Data Pipelines with Apache Beam</name>
 
   <properties>
     <apache.beam.version>2.28.0</apache.beam.version>
@@ -18,6 +18,11 @@
 
     <jupiter.version>5.7.1</jupiter.version>
     <spotless.version>2.0.1</spotless.version>
+    <maven.ext.os.version>1.7.0</maven.ext.os.version>
+    <maven.protobuf.version>0.6.1</maven.protobuf.version>
+    <proto.version>3.13.0</proto.version>
+    <protoc.version>3.15.6</protoc.version>
+    <grpc.version>1.33.1</grpc.version>
   </properties>
 
   <build>
@@ -133,6 +138,18 @@
       </dependency>
 
       <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-all</artifactId>
+        <version>${grpc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>io.grpc</groupId>
+        <artifactId>grpc-context</artifactId>
+        <version>${grpc.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-api</artifactId>
         <version>${jupiter.version}</version>
@@ -159,6 +176,13 @@
         <scope>provided</scope>
       </dependency>
 
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>1.3.2</version>
+        <scope>provided</scope>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -166,6 +190,7 @@
     <module>util</module>
     <module>chapter1</module>
     <module>chapter2</module>
+    <module>chapter3</module>
   </modules>
 
 </project>

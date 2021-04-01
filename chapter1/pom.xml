@@ -11,7 +11,7 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <name>Apache Beam Practical Guide Chapter 1</name>
+  <name>Building Big Data Pipelines with Apache Beam Chapter 1</name>
 
   <dependencies>
 
