@@ -16,8 +16,7 @@
 package com.packtpub.beam.chapter2;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.packtpub.beam.chapter2.MaxWordLength.Params;
-import com.packtpub.beam.chapter2.utils.MapToLines;
+import com.packtpub.beam.util.MapToLines;
 import com.packtpub.beam.util.Tokenize;
 import java.io.IOException;
 import java.io.InputStream;
