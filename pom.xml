@@ -11,7 +11,7 @@
   <name>Building Big Data Pipelines with Apache Beam</name>
 
   <properties>
-    <apache.beam.version>2.28.0</apache.beam.version>
+    <apache.beam.version>2.31.0-SNAPSHOT</apache.beam.version>
     <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,6 +24,15 @@
     <protoc.version>3.15.6</protoc.version>
     <grpc.version>1.33.1</grpc.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>apache-snapshots-repo</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases><enabled>false</enabled></releases>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
@@ -191,6 +200,7 @@
     <module>chapter1</module>
     <module>chapter2</module>
     <module>chapter3</module>
+    <module>chapter4</module>
   </modules>
 
 </project>

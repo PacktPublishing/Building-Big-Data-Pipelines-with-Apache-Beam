@@ -15,12 +15,12 @@
  */
 package com.packtpub.beam.chapter2;
 
-import static com.packtpub.beam.chapter2.SportTracker.EARTH_DIAMETER;
+import static com.packtpub.beam.util.Position.EARTH_DIAMETER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.packtpub.beam.chapter2.SportTracker.Position;
-import com.packtpub.beam.chapter2.SportTracker.PositionCoder;
+import com.packtpub.beam.util.Position;
+import com.packtpub.beam.util.PositionCoder;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
