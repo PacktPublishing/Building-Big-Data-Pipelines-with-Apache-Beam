@@ -24,12 +24,12 @@ import org.apache.beam.sdk.values.PDone;
 import org.apache.beam.sdk.values.TypeDescriptors;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-public class WriteNotificationToKafka extends PTransform<PCollection<KV<String, Boolean>>, PDone> {
+public class WriteNotificationsToKafka extends PTransform<PCollection<KV<String, Boolean>>, PDone> {
 
   private final String boostrapServer;
   private final String outputTopic;
 
-  public WriteNotificationToKafka(String bootstrapServer, String outputTopic) {
+  public WriteNotificationsToKafka(String bootstrapServer, String outputTopic) {
     this.boostrapServer = bootstrapServer;
     this.outputTopic = outputTopic;
   }
