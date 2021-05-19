@@ -15,7 +15,7 @@
  */
 package com.packtpub.beam.chapter4;
 
-import com.packtpub.beam.chapter4.SportTrackerMotivationUsingSideInputs.Metric;
+import com.packtpub.beam.chapter4.ToMetric.Metric;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;

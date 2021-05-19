@@ -15,8 +15,8 @@
  */
 package com.packtpub.beam.chapter4;
 
-import com.packtpub.beam.chapter4.SportTrackerMotivationUsingSideInputs.Metric;
-import com.packtpub.beam.chapter4.SportTrackerMotivationUsingSideInputs.MetricCoder;
+import com.packtpub.beam.chapter4.ToMetric.Metric;
+import com.packtpub.beam.chapter4.ToMetric.MetricCoder;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.KvCoder;
 import org.apache.beam.sdk.coders.StringUtf8Coder;

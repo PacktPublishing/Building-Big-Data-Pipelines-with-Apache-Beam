@@ -30,7 +30,7 @@ import org.apache.beam.sdk.values.TimestampedValue;
 import org.joda.time.Instant;
 import org.junit.jupiter.api.Test;
 
-public class SportTrackerMotivationUsingSideInputsTest {
+public class SportTrackerMotivationUsingCoGBKTest {
 
   private final Instant now = Instant.ofEpochMilli(1234567890000L);
 
@@ -54,8 +54,7 @@ public class SportTrackerMotivationUsingSideInputsTest {
                     TimestampedValue.of(KV.of("bar", barPos.get()), now.plus(360000)))
                 .withCoder(KvCoder.of(StringUtf8Coder.of(), new PositionCoder())));
 
-    PCollection<KV<String, Boolean>> result =
-        input.apply(new SportTrackerMotivationUsingSideInputs());
+    PCollection<KV<String, Boolean>> result = input.apply(new SportTrackerMotivationUsingCoGBK());
     PAssert.that(result)
         .containsInAnyOrder(
             KV.of("foo", false), KV.of("bar", true), KV.of("foo", false), KV.of("bar", true));
@@ -82,8 +81,7 @@ public class SportTrackerMotivationUsingSideInputsTest {
                 .addElements(TimestampedValue.of(KV.of("foo", fooPos.get()), now.plus(330000)))
                 .advanceWatermarkToInfinity());
 
-    PCollection<KV<String, Boolean>> result =
-        input.apply(new SportTrackerMotivationUsingSideInputs());
+    PCollection<KV<String, Boolean>> result = input.apply(new SportTrackerMotivationUsingCoGBK());
     PAssert.that(result).containsInAnyOrder(KV.of("foo", true));
     p.run();
   }

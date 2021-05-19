@@ -15,72 +15,71 @@
  */
 package com.packtpub.beam.chapter4;
 
-import com.google.common.base.MoreObjects;
 import com.packtpub.beam.chapter4.ToMetric.Metric;
 import com.packtpub.beam.util.Position;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Map;
 import lombok.Value;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
-import org.apache.beam.sdk.transforms.Contextful;
 import org.apache.beam.sdk.transforms.FlatMapElements;
 import org.apache.beam.sdk.transforms.PTransform;
-import org.apache.beam.sdk.transforms.Requirements;
-import org.apache.beam.sdk.transforms.View;
+import org.apache.beam.sdk.transforms.join.CoGroupByKey;
+import org.apache.beam.sdk.transforms.join.KeyedPCollectionTuple;
 import org.apache.beam.sdk.transforms.windowing.FixedWindows;
 import org.apache.beam.sdk.transforms.windowing.SlidingWindows;
 import org.apache.beam.sdk.transforms.windowing.Window;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.values.PCollectionView;
+import org.apache.beam.sdk.values.TupleTag;
 import org.apache.beam.sdk.values.TypeDescriptors;
 import org.joda.time.Duration;
 
-/** Task 11 */
-public class SportTrackerMotivationUsingSideInputs
+public class SportTrackerMotivationUsingCoGBK
     extends PTransform<PCollection<KV<String, Position>>, PCollection<KV<String, Boolean>>> {
 
   @Override
   public PCollection<KV<String, Boolean>> expand(PCollection<KV<String, Position>> input) {
     PCollection<KV<String, Metric>> metrics = input.apply("computeMetrics", new ToMetric());
 
-    PCollectionView<Map<String, Double>> longRunningAverageView =
+    PCollection<KV<String, Double>> longAverage =
         metrics
             .apply(
                 Window.into(
                     SlidingWindows.of(Duration.standardMinutes(5))
                         .every(Duration.standardMinutes(1))))
             .apply("longAverage", new ComputeAverage())
-            .apply(Window.into(FixedWindows.of(Duration.standardMinutes(1))))
-            .apply("longMap", View.asMap());
+            .apply(Window.into(FixedWindows.of(Duration.standardMinutes(1))));
 
-    return metrics
-        .apply(Window.into(FixedWindows.of(Duration.standardMinutes(1))))
-        .apply("shortAverage", new ComputeAverage())
+    PCollection<KV<String, Double>> shortAverage =
+        metrics
+            .apply(Window.into(FixedWindows.of(Duration.standardMinutes(1))))
+            .apply("shortAverage", new ComputeAverage());
+
+    TupleTag<Double> shortTag = new TupleTag<>("short");
+    TupleTag<Double> longTag = new TupleTag<>("long");
+    return KeyedPCollectionTuple.of(longTag, longAverage)
+        .and(shortTag, shortAverage)
+        .apply(CoGroupByKey.create())
         .apply(
             FlatMapElements.into(
                     TypeDescriptors.kvs(TypeDescriptors.strings(), TypeDescriptors.booleans()))
                 .via(
-                    Contextful.fn(
-                        (elem, c) -> {
-                          double longPace =
-                              MoreObjects.firstNonNull(
-                                  c.sideInput(longRunningAverageView).get(elem.getKey()), 0.0);
-                          if (longPace > 0.0) {
-                            double ratio = elem.getValue() / longPace;
-                            if (ratio < 0.9 || ratio > 1.1) {
-                              return Collections.singletonList(KV.of(elem.getKey(), ratio > 1.0));
-                            }
-                          }
-                          return Collections.emptyList();
-                        },
-                        Requirements.requiresSideInputs(longRunningAverageView))));
+                    elem -> {
+                      double longPace = elem.getValue().getOnly(longTag, 0.0);
+                      double shortPace = elem.getValue().getOnly(shortTag, 0.0);
+                      if (longPace > 0.0 && shortPace > 0.0) {
+                        double ratio = shortPace / longPace;
+                        if (ratio < 0.9 || ratio > 1.1) {
+                          return Collections.singletonList(KV.of(elem.getKey(), ratio > 1.0));
+                        }
+                      }
+                      return Collections.emptyList();
+                    }));
   }
 
   public static void main(String[] args) {
-    Params params = parseArgs(args);
+    SportTrackerMotivationUsingSideInputs.Params params = parseArgs(args);
     Pipeline pipeline =
         Pipeline.create(PipelineOptionsFactory.fromArgs(params.getRemainingArgs()).create());
 
@@ -96,12 +95,13 @@ public class SportTrackerMotivationUsingSideInputs
     pipeline.run().waitUntilFinish();
   }
 
-  static Params parseArgs(String[] args) {
+  static SportTrackerMotivationUsingSideInputs.Params parseArgs(String[] args) {
     if (args.length < 3) {
       throw new IllegalArgumentException(
           "Expected at least 3 arguments: <bootstrapServer> <inputTopic> <outputTopic>");
     }
-    return new Params(args[0], args[1], args[2], Arrays.copyOfRange(args, 3, args.length));
+    return new SportTrackerMotivationUsingSideInputs.Params(
+        args[0], args[1], args[2], Arrays.copyOfRange(args, 3, args.length));
   }
 
   @Value

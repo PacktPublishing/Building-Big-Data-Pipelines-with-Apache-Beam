@@ -16,17 +16,23 @@
 package com.packtpub.beam.chapter4;
 
 import com.google.common.base.MoreObjects;
-import com.packtpub.beam.chapter4.SportTrackerMotivationUsingSideInputs.Metric;
-import com.packtpub.beam.chapter4.SportTrackerMotivationUsingSideInputs.MetricCoder;
 import com.packtpub.beam.util.Position;
 import com.packtpub.beam.util.PositionCoder;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.function.Consumer;
+import lombok.Value;
+import org.apache.beam.sdk.coders.CoderException;
+import org.apache.beam.sdk.coders.CustomCoder;
+import org.apache.beam.sdk.coders.DoubleCoder;
 import org.apache.beam.sdk.coders.KvCoder;
 import org.apache.beam.sdk.coders.StringUtf8Coder;
+import org.apache.beam.sdk.coders.VarLongCoder;
 import org.apache.beam.sdk.state.BagState;
 import org.apache.beam.sdk.state.StateSpec;
 import org.apache.beam.sdk.state.StateSpecs;
@@ -48,7 +54,36 @@ import org.joda.time.Duration;
 import org.joda.time.Instant;
 
 class ToMetric
-    extends PTransform<PCollection<KV<String, Position>>, PCollection<KV<String, Metric>>> {
+    extends PTransform<
+        PCollection<KV<String, Position>>, PCollection<KV<String, ToMetric.Metric>>> {
+
+  @Value
+  static class Metric {
+    double length;
+    long duration;
+
+    Metric(double length, long duration) {
+      this.length = length;
+      this.duration = duration;
+    }
+  }
+
+  static class MetricCoder extends CustomCoder<Metric> {
+
+    private static final DoubleCoder DOUBLE_CODER = DoubleCoder.of();
+    private static final VarLongCoder LONG_CODER = VarLongCoder.of();
+
+    @Override
+    public void encode(Metric value, OutputStream outStream) throws CoderException, IOException {
+      DOUBLE_CODER.encode(value.getLength(), outStream);
+      LONG_CODER.encode(value.getDuration(), outStream);
+    }
+
+    @Override
+    public Metric decode(InputStream inStream) throws CoderException, IOException {
+      return new Metric(DOUBLE_CODER.decode(inStream), LONG_CODER.decode(inStream));
+    }
+  }
 
   @Override
   public PCollection<KV<String, Metric>> expand(PCollection<KV<String, Position>> input) {

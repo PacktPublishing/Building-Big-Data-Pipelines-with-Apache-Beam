@@ -18,7 +18,7 @@ package com.packtpub.beam.chapter4;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import com.packtpub.beam.chapter4.SportTrackerMotivationUsingSideInputs.Metric;
+import com.packtpub.beam.chapter4.ToMetric.Metric;
 import com.packtpub.beam.util.Position;
 import com.packtpub.beam.util.PositionCoder;
 import org.apache.beam.sdk.Pipeline;
