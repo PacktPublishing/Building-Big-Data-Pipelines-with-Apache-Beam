@@ -112,6 +112,12 @@
 
       <dependency>
         <groupId>org.apache.beam</groupId>
+        <artifactId>beam-sdks-java-extensions-join-library</artifactId>
+        <version>${apache.beam.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.beam</groupId>
         <artifactId>beam-sdks-java-io-kafka</artifactId>
         <version>${apache.beam.version}</version>
       </dependency>
