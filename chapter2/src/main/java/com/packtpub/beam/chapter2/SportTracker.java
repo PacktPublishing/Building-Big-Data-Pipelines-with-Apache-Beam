@@ -15,8 +15,12 @@
  */
 package com.packtpub.beam.chapter2;
 
+import static com.packtpub.beam.util.Position.EARTH_DIAMETER;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Streams;
+import com.packtpub.beam.util.Position;
+import com.packtpub.beam.util.PositionCoder;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -58,8 +62,6 @@ import org.joda.time.Duration;
 import org.joda.time.Instant;
 
 public class SportTracker {
-
-  static final long EARTH_DIAMETER = 6_371_000; // meters
 
   public static void main(String[] args) {
     Params params = parseArgs(args);
@@ -192,65 +194,9 @@ public class SportTracker {
   }
 
   @Value
-  static class Position {
-    static Optional<Position> parseFrom(String tsv) {
-      String[] parts = tsv.split("\t");
-      if (parts.length != 3) {
-        return Optional.empty();
-      }
-      return Optional.of(
-          new Position(
-              Double.parseDouble(parts[0]),
-              Double.parseDouble(parts[1]),
-              Long.parseLong(parts[2])));
-    }
-
-    double distance(Position other) {
-      return calculateDistanceOfPositions(this, other);
-    }
-
-    private static double calculateDistanceOfPositions(Position first, Position second) {
-      double deltaLatitude = (first.getLatitude() - second.getLatitude()) * Math.PI / 180;
-      double deltaLongitude = (first.getLongitude() - second.getLongitude()) * Math.PI / 180;
-      double latitudeIncInMeters = calculateDelta(deltaLatitude);
-      double longitudeIncInMeters = calculateDelta(deltaLongitude);
-      return EARTH_DIAMETER
-          * Math.sqrt(
-              latitudeIncInMeters * latitudeIncInMeters
-                  + longitudeIncInMeters * longitudeIncInMeters);
-    }
-
-    // this is approximation for small distances only
-    private static double calculateDelta(double deltaLatLon) {
-      return Math.sqrt(2 * (1 - Math.cos(deltaLatLon)));
-    }
-
-    double latitude;
-    double longitude;
-    long timestamp;
-  }
-
-  @Value
   static class Metric {
     double length;
     long time;
-  }
-
-  static class PositionCoder extends CustomCoder<Position> {
-
-    @Override
-    public void encode(Position value, OutputStream outStream) throws CoderException, IOException {
-      DataOutputStream dos = new DataOutputStream(outStream);
-      dos.writeDouble(value.getLatitude());
-      dos.writeDouble(value.getLongitude());
-      VarInt.encode(value.getTimestamp(), dos);
-    }
-
-    @Override
-    public Position decode(InputStream inStream) throws CoderException, IOException {
-      DataInputStream dis = new DataInputStream(inStream);
-      return new Position(dis.readDouble(), dis.readDouble(), VarInt.decodeLong(dis));
-    }
   }
 
   static class MetricCoder extends CustomCoder<Metric> {
