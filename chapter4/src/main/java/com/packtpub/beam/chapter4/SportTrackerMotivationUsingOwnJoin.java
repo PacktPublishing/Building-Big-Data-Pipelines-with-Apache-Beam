@@ -15,8 +15,11 @@
  */
 package com.packtpub.beam.chapter4;
 
-import com.packtpub.beam.chapter4.ToMetric.Metric;
 import com.packtpub.beam.util.Position;
+import com.packtpub.beam.util.ReadPositionsFromKafka;
+import com.packtpub.beam.util.ToMetric;
+import com.packtpub.beam.util.ToMetric.Metric;
+import com.packtpub.beam.util.WriteNotificationsToKafka;
 import java.util.Arrays;
 import java.util.Collections;
 import lombok.Value;

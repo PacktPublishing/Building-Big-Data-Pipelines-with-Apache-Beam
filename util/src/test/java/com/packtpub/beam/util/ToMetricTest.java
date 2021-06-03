@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.packtpub.beam.chapter4;
+package com.packtpub.beam.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import com.packtpub.beam.chapter4.ToMetric.Metric;
-import com.packtpub.beam.util.Position;
-import com.packtpub.beam.util.PositionCoder;
+import com.packtpub.beam.util.ToMetric.Metric;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.coders.KvCoder;
 import org.apache.beam.sdk.coders.StringUtf8Coder;

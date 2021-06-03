@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.packtpub.beam.chapter4;
+package com.packtpub.beam.util;
 
 import com.google.common.base.MoreObjects;
-import com.packtpub.beam.util.Position;
-import com.packtpub.beam.util.PositionCoder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,22 +51,22 @@ import org.apache.beam.sdk.values.TimestampedValue;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
-class ToMetric
+public class ToMetric
     extends PTransform<
         PCollection<KV<String, Position>>, PCollection<KV<String, ToMetric.Metric>>> {
 
   @Value
-  static class Metric {
+  public static class Metric {
     double length;
     long duration;
 
-    Metric(double length, long duration) {
+    public Metric(double length, long duration) {
       this.length = length;
       this.duration = duration;
     }
   }
 
-  static class MetricCoder extends CustomCoder<Metric> {
+  public static class MetricCoder extends CustomCoder<Metric> {
 
     private static final DoubleCoder DOUBLE_CODER = DoubleCoder.of();
     private static final VarLongCoder LONG_CODER = VarLongCoder.of();
