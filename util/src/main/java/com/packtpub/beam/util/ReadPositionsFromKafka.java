@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.packtpub.beam.chapter4;
+package com.packtpub.beam.util;
 
-import com.packtpub.beam.util.Position;
-import com.packtpub.beam.util.PositionCoder;
 import java.util.Collections;
 import java.util.Optional;
 import org.apache.beam.sdk.coders.KvCoder;
@@ -36,7 +34,7 @@ import org.apache.beam.sdk.values.TypeDescriptors;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.joda.time.Instant;
 
-class ReadPositionsFromKafka extends PTransform<PBegin, PCollection<KV<String, Position>>> {
+public class ReadPositionsFromKafka extends PTransform<PBegin, PCollection<KV<String, Position>>> {
 
   private final String bootstrapServer;
   private final String inputTopic;
