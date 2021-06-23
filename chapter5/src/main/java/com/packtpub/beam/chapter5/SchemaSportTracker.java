@@ -108,11 +108,11 @@ public class SchemaSportTracker {
                     TypeDescriptors.kvs(TypeDescriptors.strings(), TypeDescriptors.strings()))
                 .via(
                     r -> {
-                      double distance = r.getRow(1).getDouble(0);
-                      long duration = r.getRow(1).getInt64(1);
+                      double distance = r.getRow(1).getRow(0).getDouble(0);
+                      long duration = r.getRow(1).getRow(0).getInt64(1);
                       return KV.of(
                           "",
-                          r.getString(0)
+                          r.getRow(0).getString(0)
                               + "\t"
                               + distance
                               + "\t"

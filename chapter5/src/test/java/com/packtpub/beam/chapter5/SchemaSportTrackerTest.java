@@ -37,7 +37,6 @@ import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.windowing.GlobalWindow;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.values.Row;
 import org.apache.beam.sdk.values.TimestampedValue;
 import org.apache.beam.sdk.values.TypeDescriptors;
 import org.joda.time.Instant;
@@ -93,9 +92,6 @@ public class SchemaSportTrackerTest {
     List<KV<String, Position>> input =
         loadDataFromStream(
             getClass().getClassLoader().getResourceAsStream("test-tracker-data.txt"));
-
-    PCollection<Row> tmp =
-        SchemaSportTracker.computeTrackerMetrics(pipeline.apply(asTestStream(input)));
 
     PCollection<String> result =
         SchemaSportTracker.computeTrackerMetrics(pipeline.apply(asTestStream(input)))
