@@ -1,0 +1,8 @@
+# FIXME: to be changed to 2.33.0 after release!
+
+apache-beam==2.32.0
+apache-beam[test]==2.32.0
+protobuf==3.17.3
+grpcio==1.40.0
+grpcio-tools==1.40.0
+

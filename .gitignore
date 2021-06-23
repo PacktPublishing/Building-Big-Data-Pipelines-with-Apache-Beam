@@ -1,3 +1,6 @@
 .idea/**
 **/target/
 *.iml
+*.pyc
+*_pb2*.py
+.mvn/wrapper/maven-wrapper.jar

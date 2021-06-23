@@ -1,6 +1,17 @@
-FROM openjdk:11
+
+FROM openjdk:11 AS java
+
+FROM python:3.7 AS py
+
+COPY --from=java /usr/local/openjdk-11 /usr/local/openjdk-11
 
 ADD . /usr/src/beam-packt/
+
+RUN apt-get -y update && apt-get -y install cmake pkg-config vim less ipython3 docker.io python3-protobuf
+RUN python3 -m pip install --upgrade pip && python3 -m pip install -r /usr/src/beam-packt/chapter6/src/main/python/requirements.txt && python3 -m pip install ipython
+
+ENV JAVA_HOME /usr/local/openjdk-11
+RUN ln -s /usr/local/openjdk-11/bin/java /usr/bin/java
 
 RUN cd /usr/src/beam-packt/ \
   && ./mvnw clean package -Pdocker
@@ -8,5 +19,9 @@ RUN cd /usr/src/beam-packt/ \
 RUN cd /usr/src/beam-packt/ \
   && ./copy-jars.sh \
   && cp bin/*.sh /usr/local/bin/
+
+# FIXME: remove this
+RUN cp /usr/src/beam-packt/job-server/target/flink-jobserver-1.0-SNAPSHOT.jar /root/.apache_beam/cache/jars/beam-runners-flink-1.12-job-server-2.32.0.jar
+
 
 ENTRYPOINT '/usr/local/bin/sleep-forever.sh'
