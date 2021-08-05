@@ -35,7 +35,6 @@ public class PrintElements<T> extends PTransform<PCollection<T>, PDone> {
   }
 
   private static class LogResultsFn<T> extends DoFn<T, Void> {
-
     @ProcessElement
     public void process(@Element T elem) {
       System.err.println(elem);
