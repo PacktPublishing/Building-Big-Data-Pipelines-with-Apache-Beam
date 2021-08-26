@@ -11,7 +11,7 @@
   <name>Building Big Data Pipelines with Apache Beam</name>
 
   <properties>
-    <apache.beam.version>2.33.0-SNAPSHOT</apache.beam.version>
+    <apache.beam.version>2.34.0-SNAPSHOT</apache.beam.version>
     <maven.compiler.plugin>3.8.1</maven.compiler.plugin>
     <maven.surefire.version>3.0.0-M5</maven.surefire.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
