@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 BASE=$(dirname $0)
 
 ${BASE}/build-docker.sh

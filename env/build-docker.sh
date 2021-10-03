@@ -3,6 +3,16 @@
 BASE=$(dirname $0)
 ROOT=${BASE}/../
 
+function get_modules() {
+  if [ -n "$1" ]; then
+    if [ "$1" -eq "$1" ]; then
+      echo "-pl :beam-chapter${1} -am"
+    else
+      echo "-pl :${1} -am"
+    fi
+  fi
+}
+
 set -e
 if [[ $(minikube status -f='{{.Host}}') != "Running" ]]; then
   echo "Please run minikube before running this script."
@@ -15,7 +25,12 @@ if ! docker images | grep packt-beam-base > /dev/null; then
   ${BASE}/build-docker-base.sh
 fi
 
-${ROOT}/mvnw package
+MODULES=""
+if [[ $# -gt 0 ]]; then
+  MODULES=$(get_modules $1)
+fi
+
+${ROOT}/mvnw package ${MODULES}
 
 docker build -t packt-beam -f ${ROOT}/docker/Dockerfile ${ROOT}
 
