@@ -199,12 +199,12 @@ public class ToMetric
                 Math.min(
                     pos.getTimestamp() - current.getTimestamp(),
                     60000 - current.getTimestamp() % 60000);
-            Position nextPost =
+            Position nextPos =
                 current.move(latitudeDiff, longitudeDiff, avgSpeedMeterPerSec, deltaMs);
-            Metric metric = new Metric(nextPost.distance(current), deltaMs);
+            Metric metric = new Metric(nextPos.distance(current), deltaMs);
             outputConsumer.accept(
-                TimestampedValue.of(metric, Instant.ofEpochMilli(nextPost.getTimestamp())));
-            current = nextPost;
+                TimestampedValue.of(metric, Instant.ofEpochMilli(nextPos.getTimestamp())));
+            current = nextPos;
           }
         }
       }

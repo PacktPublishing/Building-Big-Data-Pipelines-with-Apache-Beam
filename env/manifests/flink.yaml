@@ -14,7 +14,8 @@ data:
     taskmanager.rpc.port: 6122
     queryable-state.proxy.ports: 6125
     jobmanager.memory.process.size: 1000m
-    taskmanager.memory.process.size: 1728m
+    taskmanager.memory.process.size: 1800m
+    taskmanager.memory.task.off-heap.size: 200m
     parallelism.default: 2
   log4j-console.properties: |+
     # This affects logging for both user code and Flink
@@ -97,7 +98,8 @@ spec:
     spec:
       containers:
       - name: jobmanager
-        image: apache/flink:1.12.4-scala_2.12-java11
+        image: flink-packt
+        imagePullPolicy: Never
         args: ["jobmanager"]
         ports:
         - containerPort: 6123
@@ -144,7 +146,8 @@ spec:
     spec:
       containers:
       - name: taskmanager
-        image: apache/flink:1.12.4-scala_2.12-java11
+        image: flink-packt
+        imagePullPolicy: Never
         args: ["taskmanager"]
         ports:
         - containerPort: 6122
@@ -161,6 +164,16 @@ spec:
           mountPath: /opt/flink/conf/
         securityContext:
           runAsUser: 9999  # refers to user _flink_ from official flink image, change if necessary
+      - name: harness
+        image: python-harness-packt
+        imagePullPolicy: Never
+        args: ["--worker_pool"]
+        ports:
+        - containerPort: 50000
+          name: rpc
+        livenessProbe:
+          tcpSocket:
+            port: 50000
       volumes:
       - name: flink-config-volume
         configMap:
