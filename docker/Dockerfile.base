@@ -20,8 +20,5 @@ RUN cd /usr/src/beam-packt/ \
   && ./copy-jars.sh \
   && cp bin/*.sh /usr/local/bin/
 
-# FIXME: remove this
-RUN cp /usr/src/beam-packt/job-server/target/flink-jobserver-1.0-SNAPSHOT.jar /root/.apache_beam/cache/jars/beam-runners-flink-1.12-job-server-2.32.0.jar
-
 
 ENTRYPOINT '/usr/local/bin/sleep-forever.sh'

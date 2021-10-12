@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.packtpub.beam</groupId>
     <artifactId>beam-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
   <name>Building Big Data Pipelines with Apache Beam Chapter 3</name>

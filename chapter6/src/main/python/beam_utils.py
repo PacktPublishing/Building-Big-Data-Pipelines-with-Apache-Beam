@@ -2,7 +2,7 @@
 
 from apache_beam.transforms.external import JavaJarExpansionService
 
-def get_expansion_service(jar="/usr/local/lib/beam-chapter6-1.0-SNAPSHOT.jar", args=None):
+def get_expansion_service(jar="/usr/local/lib/beam-chapter6-1.0.0.jar", args=None):
   if args == None:
     args = [
         "--defaultEnvironmentType=PROCESS",
