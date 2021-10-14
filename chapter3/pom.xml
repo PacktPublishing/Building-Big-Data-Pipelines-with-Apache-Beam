@@ -94,7 +94,7 @@
 
     <dependency>
       <groupId>org.apache.beam</groupId>
-      <artifactId>beam-runners-flink-1.12</artifactId>
+      <artifactId>beam-runners-flink-1.13</artifactId>
     </dependency>
 
     <dependency>
