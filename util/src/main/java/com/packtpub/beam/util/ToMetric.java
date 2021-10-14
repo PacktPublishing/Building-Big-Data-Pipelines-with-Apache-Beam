@@ -116,7 +116,7 @@ public class ToMetric
       Instant minTimerTs =
           MoreObjects.firstNonNull(minTimerOutputTs.read(), BoundedWindow.TIMESTAMP_MAX_VALUE);
       if (ts.isBefore(minTimerTs)) {
-        flushTimer.set(ts);
+        flushTimer.withOutputTimestamp(ts).set(ts);
         minTimerOutputTs.write(ts);
       }
       positionsState.add(element.getValue());
