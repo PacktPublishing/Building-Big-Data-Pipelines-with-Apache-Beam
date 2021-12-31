@@ -53,7 +53,7 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 
 
 ### Related products <Other books you may enjoy>
-* Data Engineering with Apache Spark, Delta Lake, and Lakehouse [[Packt]](https://www.packtpub.com/produhttps://www.packtpub.com/product/data-engineering-with-apache-spark-delta-lake-and-lakehouse/9781801077743ct/data-engineering-with-python/9781839214189?utm_source=github&utm_medium=repository&utm_campaign=9781801077743) [[Amazon]](https://www.amazon.com/dp/1801077746)
+* Data Engineering with Apache Spark, Delta Lake, and Lakehouse [[Packt]](https://www.packtpub.com/product/data-engineering-with-apache-spark-delta-lake-and-lakehouse/9781801077743?utm_source=github&utm_medium=repository&utm_campaign=9781801077743) [[Amazon]](https://www.amazon.com/dp/1801077746)
 
 * Data Engineering with Python [[Packt]](https://www.packtpub.com/product/data-engineering-with-python/9781839214189?utm_source=github&utm_medium=repository&utm_campaign=9781839214189) [[Amazon]](https://www.amazon.com/dp/183921418X)
 
