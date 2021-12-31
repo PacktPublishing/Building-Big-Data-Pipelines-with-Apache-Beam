@@ -44,7 +44,7 @@ With the following software and hardware list you can run all code files present
 
 | Chapter  | Software required                   | OS required                        |
 | -------- | ------------------------------------| -----------------------------------|
-| 1-7	     | Java 11, Python 3                     | Windows, Mac OS X, and Linux (Any) |
+| 1-7	     | Java 11, Python 3                   | Windows, Mac OS X, and Linux (Any) |
 | 1-7      | Bash                                | Windows, Mac OS X, and Linux (Any  |
 | 1-7      | Docker                              | Windows, Mac OS X, and Linux (Any  |
 
@@ -57,7 +57,7 @@ We also provide a PDF file that has color images of the screenshots/diagrams use
 
 * Data Engineering with Python [[Packt]](https://www.packtpub.com/product/data-engineering-with-python/9781839214189?utm_source=github&utm_medium=repository&utm_campaign=9781839214189) [[Amazon]](https://www.amazon.com/dp/183921418X)
 
-## Get to Know the Authors
+## Get to Know the Author
 **Jan Lukavský**
 is a freelance big data architect and engineer who is also a committer of Apache Beam. He is a certified Apache Hadoop professional.
 He is working on open source big data systems combining batch and streaming data pipelines in a unified model, enabling the rise of real-time, data-driven applications.
