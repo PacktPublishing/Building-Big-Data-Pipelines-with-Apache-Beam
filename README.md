@@ -45,8 +45,8 @@ With the following software and hardware list you can run all code files present
 | Chapter  | Software required                   | OS required                        |
 | -------- | ------------------------------------| -----------------------------------|
 | 1-7	     | Java 11, Python 3                   | Windows, Mac OS X, and Linux (Any) |
-| 1-7      | Bash                                | Windows, Mac OS X, and Linux (Any  |
-| 1-7      | Docker                              | Windows, Mac OS X, and Linux (Any  |
+| 1-7      | Bash                                | Windows, Mac OS X, and Linux (Any) |
+| 1-7      | Docker                              | Windows, Mac OS X, and Linux (Any) |
 
 
 We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it](https://static.packt-cdn.com/downloads/9781800564930_ColorImages.pdf).
