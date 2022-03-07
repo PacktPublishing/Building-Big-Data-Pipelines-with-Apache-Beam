@@ -50,7 +50,7 @@ class RPCServer(service_pb2_grpc.RpcServiceServicer):
   def start(self, port):
     self.server = grpc.server(futures.ThreadPoolExecutor())
     service_pb2_grpc.add_RpcServiceServicer_to_server(self, self.server)
-    self.server.add_insecure_port("0:%d" % (int(port), ))
+    self.server.add_insecure_port("localhost:%d" % (int(port), ))
     self.server.start()
 
   def stop(self):
