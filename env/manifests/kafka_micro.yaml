@@ -16,7 +16,7 @@ spec:
   selector:
     app: kafka
 ---
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: kafka-pdb
