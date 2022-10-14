@@ -222,8 +222,8 @@
     <module>chapter3</module>
     <module>chapter4</module>
     <module>chapter5</module>
-    <!--<module>chapter6</module>-->
-    <!--<module>chapter7</module>-->
+    <module>chapter6</module>
+    <module>chapter7</module>
   </modules>
 
 </project>

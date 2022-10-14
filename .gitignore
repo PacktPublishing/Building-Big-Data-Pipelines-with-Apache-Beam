@@ -4,3 +4,9 @@
 *.pyc
 *_pb2*.py
 .mvn/wrapper/maven-wrapper.jar
+chapter6/dependency-reduced-pom.xml
+chapter6/src/main/python/build/
+chapter6/src/main/python/dist/
+chapter6/src/main/python/packt_beam_chapter6.egg-info/
+venv/
+
