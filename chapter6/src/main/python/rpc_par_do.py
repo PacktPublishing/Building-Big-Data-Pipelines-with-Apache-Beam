@@ -104,29 +104,37 @@ class RPCDoFn(DoFn):
     batchSize.write(currentSize)
     batch.add(element[1])
     if currentSize >= self.batchSize:
-      return self.flush(batch, batchSize)
+      return self.flush(batch, batchSize, flushTimer, endOfTime)
 
   @on_timer(FLUSH_TIMER)
   def onFlushTimer(
       self,
       batch = DoFn.StateParam(BATCH),
-      batchSize = DoFn.StateParam(BATCH_SIZE)):
+      batchSize = DoFn.StateParam(BATCH_SIZE),
+      flushTimer=DoFn.TimerParam(FLUSH_TIMER),
+      endOfTime=DoFn.TimerParam(EOW_TIMER)):
 
-    return self.flush(batch, batchSize)
+    return self.flush(batch, batchSize, flushTimer, endOfTime)
 
   @on_timer(EOW_TIMER)
   def onEndOfTime(
       self,
       batch = DoFn.StateParam(BATCH),
-      batchSize = DoFn.StateParam(BATCH_SIZE)):
+      batchSize = DoFn.StateParam(BATCH_SIZE),
+      flushTimer=DoFn.TimerParam(FLUSH_TIMER),
+      endOfTime=DoFn.TimerParam(EOW_TIMER)):
 
-    return self.flush(batch, batchSize)
+    return self.flush(batch, batchSize, flushTimer, endOfTime)
 
-  def flush(self, batch, batchSize):
+  def flush(self, batch, batchSize, flushTimer, endOfTime):
 
     import service_pb2
 
     batchSize.clear()
+    if flushTimer:
+      flushTimer.clear()
+    if endOfTime:
+      endOfTime.clear()
     req = service_pb2.RequestList()
     inputs = batch.read()
     req.request.extend([service_pb2.Request(input=item) for item in set(inputs)])
