@@ -40,5 +40,13 @@ public class Utils {
         .collect(Collectors.toList());
   }
 
+  public static List<String> readAllLines(InputStream stream) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+      return reader.lines().collect(Collectors.toList());
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
   private Utils() {}
 }

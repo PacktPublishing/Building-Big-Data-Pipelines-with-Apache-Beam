@@ -32,8 +32,7 @@ All of the code is organized into folders.
 
 The code will look like the following:
 ```
-ClassLoader loader = FirstPipeline.class. 
-getClassLoader(); 
+ClassLoader loader = FirstPipeline.class.getClassLoader();
 String file = loader.getResource("lorem.txt").getFile();
 List<String> lines = Files.readAllLines( Paths.get(file), StandardCharsets.UTF_8);
 ```

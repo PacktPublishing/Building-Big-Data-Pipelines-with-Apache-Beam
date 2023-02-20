@@ -20,10 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.packtpub.beam.util.PrintElements;
 import com.packtpub.beam.util.Tokenize;
+import com.packtpub.beam.util.Utils;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -47,10 +45,7 @@ public class Chapter1DemoTest {
   List<String> lines;
 
   public Chapter1DemoTest() throws Exception {
-    lines =
-        Files.readAllLines(
-            Paths.get(ClassLoader.getSystemClassLoader().getResource("lorem.txt").getFile()),
-            StandardCharsets.UTF_8);
+    lines = Utils.readAllLines(ClassLoader.getSystemClassLoader().getResourceAsStream("lorem.txt"));
   }
 
   @Test
