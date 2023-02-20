@@ -62,6 +62,7 @@ import org.apache.beam.sdk.state.ValueState;
 import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.ParDo;
+import org.apache.beam.sdk.transforms.windowing.BoundedWindow;
 import org.apache.beam.sdk.transforms.windowing.GlobalWindow;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
@@ -199,6 +200,9 @@ public class RPCParDoStateful {
     @StateId("batchSize")
     private final StateSpec<ValueState<Integer>> batchSizeSpec = StateSpecs.value();
 
+    @StateId("batchMinTimestamp")
+    private final StateSpec<ValueState<Instant>> minTimestampSpec = StateSpecs.value();
+
     @TimerId("flushTimer")
     private final TimerSpec flushTimerSpec = TimerSpecs.timer(TimeDomain.PROCESSING_TIME);
 
@@ -233,20 +237,27 @@ public class RPCParDoStateful {
         @Timestamp Instant timestamp,
         @StateId("batch") BagState<ValueWithTimestamp<String>> elements,
         @StateId("batchSize") ValueState<Integer> batchSize,
+        @StateId("batchMinTimestamp") ValueState<Instant> batchMinStamp,
         @TimerId("flushTimer") Timer flushTimer,
         @TimerId("endOfTime") Timer endOfTimeTimer,
         OutputReceiver<KV<String, Integer>> outputReceiver) {
 
-      endOfTimeTimer.set(GlobalWindow.INSTANCE.maxTimestamp());
+      Instant currentMinStamp =
+          MoreObjects.firstNonNull(batchMinStamp.read(), BoundedWindow.TIMESTAMP_MAX_VALUE);
+      if (currentMinStamp.isAfter(timestamp)) {
+        currentMinStamp = timestamp;
+        batchMinStamp.write(timestamp);
+      }
+      endOfTimeTimer.withOutputTimestamp(currentMinStamp).set(GlobalWindow.INSTANCE.maxTimestamp());
       int currentSize = MoreObjects.firstNonNull(batchSize.read(), 0);
       ValueWithTimestamp<String> value = new ValueWithTimestamp<>(input.getValue(), timestamp);
       if (currentSize == maxBatchSize - 1) {
         flushOutput(
             Iterables.concat(elements.read(), Collections.singletonList(value)), outputReceiver);
-        clearState(elements, batchSize, flushTimer);
+        clearState(elements, batchSize, batchMinStamp, flushTimer);
       } else {
         if (currentSize == 0) {
-          flushTimer.offset(maxBatchWait).setRelative();
+          flushTimer.withOutputTimestamp(currentMinStamp).offset(maxBatchWait).setRelative();
         }
         elements.add(value);
         batchSize.write(currentSize + 1);
@@ -257,10 +268,11 @@ public class RPCParDoStateful {
     public void onFlushTimer(
         @StateId("batch") BagState<ValueWithTimestamp<String>> elements,
         @StateId("batchSize") ValueState<Integer> batchSize,
+        @StateId("batchMinTimestamp") ValueState<Instant> batchMinStamp,
         OutputReceiver<KV<String, Integer>> outputReceiver) {
 
       flushOutput(elements.read(), outputReceiver);
-      clearState(elements, batchSize, null);
+      clearState(elements, batchSize, batchMinStamp, null);
     }
 
     @OnTimer("endOfTime")
@@ -276,10 +288,12 @@ public class RPCParDoStateful {
     private void clearState(
         BagState<ValueWithTimestamp<String>> elements,
         ValueState<Integer> batchSize,
+        ValueState<Instant> batchMinStamp,
         @Nullable Timer flushTimer) {
 
       elements.clear();
       batchSize.clear();
+      batchMinStamp.clear();
       if (flushTimer != null) {
         // Beam is currently missing a clear() method for Timer
         // see https://issues.apache.org/jira/browse/BEAM-10887 for updates

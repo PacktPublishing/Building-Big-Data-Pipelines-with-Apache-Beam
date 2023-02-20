@@ -1,6 +1,6 @@
-apache-beam==2.33.0
-apache-beam[test]==2.33.0
-protobuf==3.17.3
+apache-beam==2.43.0
+apache-beam[test]==2.43.0
+protobuf==3.19.6
 grpcio==1.40.0
 grpcio-tools==1.40.0
 
