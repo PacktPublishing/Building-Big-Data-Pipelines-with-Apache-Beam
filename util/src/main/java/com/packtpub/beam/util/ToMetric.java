@@ -1,5 +1,5 @@
 /**
- * Copyright 2021-2022 Packt Publishing Limited
+ * Copyright 2021-2023 Packt Publishing Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,6 @@ public class ToMetric
 
     @OnTimer("flushPosition")
     public void onFlushTimer(
-        OnTimerContext context,
         @Key String key,
         @StateId("positions") BagState<Position> positions,
         @StateId("minTimerOutputTs") ValueState<Instant> minTimerOutputTs,
@@ -134,7 +133,7 @@ public class ToMetric
       minTimerOutputTs.write(BoundedWindow.TIMESTAMP_MIN_VALUE);
       PriorityQueue<Position> queue =
           new PriorityQueue<>(Comparator.comparing(Position::getTimestamp));
-      Instant ts = context.fireTimestamp();
+      Instant ts = timer.getCurrentRelativeTime();
 
       List<Position> keep = new ArrayList<>();
       long minTsToKeep = BoundedWindow.TIMESTAMP_MAX_VALUE.getMillis();
@@ -167,14 +166,12 @@ public class ToMetric
       if (currentStamp.getMillis() > minTsToKeep + 300000) {
         minTsToKeep = currentStamp.getMillis();
       }
-      if (minTsToKeep < BoundedWindow.TIMESTAMP_MAX_VALUE.getMillis()) {
+      if (timer.getCurrentRelativeTime().isBefore(BoundedWindow.TIMESTAMP_MAX_VALUE)) {
         timer
             .withOutputTimestamp(Instant.ofEpochMilli(minTsToKeep))
             .offset(Duration.ZERO)
             .align(Duration.standardMinutes(1))
             .setRelative();
-      } else {
-        timer.offset(Duration.ZERO).align(Duration.standardMinutes(1)).setRelative();
       }
     }
 

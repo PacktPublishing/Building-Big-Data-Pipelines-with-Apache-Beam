@@ -1,5 +1,5 @@
 /**
- * Copyright 2021-2022 Packt Publishing Limited
+ * Copyright 2021-2023 Packt Publishing Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,14 @@ public class Utils {
     return Arrays.stream(input.split("\\W+"))
         .filter(((Predicate<String>) Strings::isNullOrEmpty).negate())
         .collect(Collectors.toList());
+  }
+
+  public static List<String> readAllLines(InputStream stream) {
+    try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+      return reader.lines().collect(Collectors.toList());
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   private Utils() {}

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021-2022 Packt Publishing Limited
+ * Copyright 2021-2023 Packt Publishing Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,10 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.packtpub.beam.util.PrintElements;
 import com.packtpub.beam.util.Tokenize;
+import com.packtpub.beam.util.Utils;
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -47,10 +45,7 @@ public class Chapter1DemoTest {
   List<String> lines;
 
   public Chapter1DemoTest() throws Exception {
-    lines =
-        Files.readAllLines(
-            Paths.get(ClassLoader.getSystemClassLoader().getResource("lorem.txt").getFile()),
-            StandardCharsets.UTF_8);
+    lines = Utils.readAllLines(ClassLoader.getSystemClassLoader().getResourceAsStream("lorem.txt"));
   }
 
   @Test

@@ -50,7 +50,7 @@ class RPCServer(service_pb2_grpc.RpcServiceServicer):
   def start(self, port):
     self.server = grpc.server(futures.ThreadPoolExecutor())
     service_pb2_grpc.add_RpcServiceServicer_to_server(self, self.server)
-    self.server.add_insecure_port("0:%d" % (int(port), ))
+    self.server.add_insecure_port("localhost:%d" % (int(port), ))
     self.server.start()
 
   def stop(self):
@@ -104,29 +104,37 @@ class RPCDoFn(DoFn):
     batchSize.write(currentSize)
     batch.add(element[1])
     if currentSize >= self.batchSize:
-      return self.flush(batch, batchSize)
+      return self.flush(batch, batchSize, flushTimer, endOfTime)
 
   @on_timer(FLUSH_TIMER)
   def onFlushTimer(
       self,
       batch = DoFn.StateParam(BATCH),
-      batchSize = DoFn.StateParam(BATCH_SIZE)):
+      batchSize = DoFn.StateParam(BATCH_SIZE),
+      flushTimer=DoFn.TimerParam(FLUSH_TIMER),
+      endOfTime=DoFn.TimerParam(EOW_TIMER)):
 
-    return self.flush(batch, batchSize)
+    return self.flush(batch, batchSize, flushTimer, endOfTime)
 
   @on_timer(EOW_TIMER)
   def onEndOfTime(
       self,
       batch = DoFn.StateParam(BATCH),
-      batchSize = DoFn.StateParam(BATCH_SIZE)):
+      batchSize = DoFn.StateParam(BATCH_SIZE),
+      flushTimer=DoFn.TimerParam(FLUSH_TIMER),
+      endOfTime=DoFn.TimerParam(EOW_TIMER)):
 
-    return self.flush(batch, batchSize)
+    return self.flush(batch, batchSize, flushTimer, endOfTime)
 
-  def flush(self, batch, batchSize):
+  def flush(self, batch, batchSize, flushTimer, endOfTime):
 
     import service_pb2
 
     batchSize.clear()
+    if flushTimer:
+      flushTimer.clear()
+    if endOfTime:
+      endOfTime.clear()
     req = service_pb2.RequestList()
     inputs = batch.read()
     req.request.extend([service_pb2.Request(input=item) for item in set(inputs)])
